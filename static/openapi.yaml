@@ -1,0 +1,237 @@
+openapi: 3.0.0
+info:
+  title: Simple Solita CRUD API
+  description: The purpose of this containerized API is to be used for internal practice, testing as well as external client demo purposes.
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:5001
+
+paths:
+#FIRST PATH TO CHECK IF API IS UP AND RUNNING
+  /api:
+    get:
+      summary: Check to see that your API is up and running by calling this endpoint.
+      tags:                   # the 'tag' refers to the label that this endpoing will get in the API docuumentation in the browser
+        - API
+      responses:
+        '200':                # Here we define the details about the status code.
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object  #The type: 'object' outputs curly braces in the 'example value' field of the Openapi docs UI 
+                              #which tells the user that the 200 API response is in a Python dictionary format.
+                properties:
+                  '200':      #'200' is the key of the 'example value' field for the successful API request.
+                    type: string
+                    example: If you see this message then that means that the containerized CRUD API is up and running. #This text is the value field of the 200 successful API response.
+        '500':    # status code
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  '500':      #'500' is the key of the 'example value' field for the unsuccessful API request.
+                    type: string
+                    example: Debug the code for the class 'API_Status_Check'. #This text is the value field of the example Python dictionary for the 500 unsuccessful API request.
+
+#CREATE AND GET ALL DATA
+  /api/v1/person:
+    post:
+      summary: Creates a person with the specified attributes and returns the information to the user.
+      tags:                   # the 'tag' refers to the label that this endpoing will get in the API docuumentation in the browser
+        - Person
+      requestBody:
+        required: true      #Here we specify that all of the below misted properties (parameters) are required to be transmitted by the user in the PUT request.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                address:
+                  type: string
+                postalZIP:
+                  type: string
+                region:
+                  type: string
+                country:
+                  type: string
+      responses:
+        '200':                # Here we define the details about the status code.
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object  #The type: 'object' outputs curly braces in the 'example value' field of the Openapi docs UI 
+                              #which tells the user that the 200 API response is in a Python dictionary format.
+                properties:
+                  '200':      #'200' is the key of the 'example value' field for the successful API request.
+                    type: string
+                    example: The record was successfully appended into the database. #This text is the value field of the 200 successful API request.
+        '400':    # status code
+          description: BAD REQUEST
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  '400':      #'400' is the key of the 'example value' field for the unsuccessful API request.
+                    type: string
+                    example: Provide one value (in string format) for each of the 7 required parameters. #This text is the value field of the example Python dictionary for the 500 unsuccessful API request.
+        '500':    # status code
+          description: INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  '500':      #'500' is the key of the 'example value' field for the unsuccessful API response.
+                    type: string
+                    example: Debug the code for the class 'CREATE_Operation'. #This text is the value field of the example Python dictionary for the 500 unsuccessful API request.
+    get:
+      summary: Reads and returns all of the data about all of the people in the database.
+      tags:                   # the 'tag' refers to the label that this endpoing will get in the API docuumentation in the browser
+        - Person
+      responses:
+        '200':                # Here we define the details about the status code.
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: string 
+                example: "The output will be a series of Python dictionaries that display all of the data from each row in the database sequentially."
+
+#This path is used by the GET, UPDATE (patch) and DELETE methods.
+  /api/v1/person/{row_id}:
+    get:
+      summary: Retrieves the data about a single person with id {row_id} from the database.
+      tags:                   # the 'tag' refers to the label that this endpoing will get in the API docuumentation in the browser
+        - Person
+      parameters:
+        - name: row_id
+          in: path
+          required: true
+          description: Provide the row number of the data that you want to query.
+          schema:
+            type : integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':                # Here we define the details about the status code.
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: string 
+                example: "The output will be a Python dictionary with the key, value pairs of the queried data."
+        '404':    # status code
+          description: ROW NUMBER NOT FOUND
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  '404':      #'500' is the key of the 'example value' field for the unsuccessful API request.
+                    type: string
+                    example: The row of data you are trying to query does not exist in database. #This text is the value field of the example Python dictionary for the 500 unsuccessful API request.
+    patch:
+      summary: Updates the information about the person with id {row_id} with the specified attributes. The updated information is returned to the user.
+      tags:                   # the 'tag' refers to the label that this endpoing will get in the API docuumentation in the browser
+        - Person        
+      parameters:
+        - name: row_id
+          in: path
+          required: true
+          description: Provide the row number of the data that you want to update.
+          schema:
+            type : integer
+            format: int64
+            minimum: 1
+      requestBody:
+        description: Update the specified row of data in the database by specifying new values for one, multiple or all of the below parameters
+        required: false      #Here we specify that all of the below misted properties (parameters) are required to be transmitted by the user in the PUT request.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                address:
+                  type: string
+                postalZIP:
+                  type: string
+                region:
+                  type: string
+                country:
+                  type: string
+      responses:
+        '200':                # Here we define the details about the status code.
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object  #The type: 'object' outputs curly braces in the 'example value' field of the Openapi docs UI 
+                              #which tells the user that the 200 API response is in a Python dictionary format.
+                properties:
+                  '200':      #'200' is the key of the 'example value' field for the successful API request.
+                    type: string
+                    example: Your update was successful. #This text is the value field of the 200 successful API request.
+        '404':    # status code
+          description: ROW NUMBER NOT FOUND
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  '404':      #'400' is the key of the 'example value' field for the unsuccessful API request.
+                    type: string
+                    example: The row of data you are trying to update does not exist in database. #This text is the value field of the example Python dictionary for the 500 unsuccessful API request.
+    delete:
+      summary: Deletes the person with id {row_id} and returns a success message if the operation succeeds.
+      tags:                   # the 'tag' refers to the label that this endpoing will get in the API docuumentation in the browser
+        - Person
+      parameters:
+        - name: row_id
+          in: path
+          required: true
+          description: Provide the row number of the data that you want to delete.
+          schema:
+            type : integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':                # Here we define the details about the status code.
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object  #The type: 'object' outputs curly braces in the 'example value' field of the Openapi docs UI 
+                              #which tells the user that the 200 API response is in a Python dictionary format.
+                properties:
+                  '200':      #'200' is the key of the 'example value' field for the successful API request.
+                    type: string
+                    example: "The record at row {row_id} was deleted successfully." #This text is the value field of the 200 successful API request.
+        '404':    # status code
+          description: ROW NUMBER NOT FOUND
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  '404':      #'404' is the key of the 'example value' field for the unsuccessful API request.
+                    type: string
+                    example: Row of data you are trying to delete does not exist in database. #This text is the value field of the example Python dictionary for the 500 unsuccessful API request.
+

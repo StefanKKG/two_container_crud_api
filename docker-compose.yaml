@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+#this container will be called "solita_crud_api"
+  solita_crud_api:
+  #use the image "crud_api_image" which we create locally using the 
+  #docker build command, as the image from which to create the container
+    image: crud_api_image:latest
+    #connect our local port 5001 (on which the API runs) to the container port 
+    #5001 so that the API's requests can be received, processed and returned by the container
+    ports:
+      - 5001:5001
+    #for low level technical reasons, in order for docker to be able to 
+    #create our named volume below, the databases's data that will be copied
+    #into the container from our local filesystem, has to be stored in a folder
+    #with a specific name namely "/var", "/private", "/volumes". 
+    #This is why I called the folder that contains our database file,
+    #"var". See this stackoverflow link for more details:
+    #https://stackoverflow.com/questions/45122459/mounts-denied-the-paths-are-not-shared-from-os-x-and-are-not-known-to-docke
+    volumes: 
+      - /var/data:/var/lib/sqlitedb
