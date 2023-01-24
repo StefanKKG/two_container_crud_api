@@ -4,5 +4,5 @@ services:
     image: crud_api_image:latest
     ports:
       - 5001:5001
-      volumes: 
+    volumes: 
       - /var/data:/var/lib/sqlitedb
